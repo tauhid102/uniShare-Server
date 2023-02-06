@@ -29,7 +29,20 @@ async function run() {
     //find all question
     app.get("/questions", async (req, res) => {
       const query = {};
-      const options = await questionCollection.find(query).toArray();
+      const question = (await questionCollection.find(query).toArray()).reverse();
+      const count= await questionCollection.estimatedDocumentCount();
+      res.send(question);
+    });
+    //find all request
+    app.get("/forum", async (req, res) => {
+      const query = {};
+      const options = (await requestCollection.find(query).toArray()).reverse();
+      res.send(options);
+    });
+    //find all review
+    app.get("/review", async (req, res) => {
+      const query = {};
+      const options = (await reviewCollection.find(query).toArray()).reverse();
       res.send(options);
     });
     // add question in the database
@@ -47,7 +60,7 @@ async function run() {
     // fetch request in the database
     app.get("/request", async (req, res) => {
       const query = {};
-      const options = await requestCollection.find(query).toArray();
+      const options = (await requestCollection.find(query).toArray()).reverse();
       res.send(options);
     });
     // get particular user question
@@ -79,13 +92,13 @@ async function run() {
     //find all users
     app.get("/users", async (req, res) => {
       const query = {};
-      const users = await userCollection.find(query).toArray();
+      const users = (await userCollection.find(query).toArray()).reverse();
       res.send(users);
     });
     //find all review
     app.get("/review", async (req, res) => {
       const query = {};
-      const users = await reviewCollection.find(query).toArray();
+      const users = (await reviewCollection.find(query).toArray()).reverse();
       res.send(users);
     });
     //set role admin
@@ -226,24 +239,6 @@ async function run() {
         options
       );
       res.send(result);
-    });
-    app.get("/question/questionCollection", async (req, res) => {
-      const cursor = questionCollection.find({});
-      const page = parseInt(req.query.page);
-      let question;
-      const count = await cursor.count();
-      if (page >= 0) {
-          books = await cursor
-          .skip(page * 8)
-          .limit(8)
-          .toArray();
-      } else {
-        question = await cursor.toArray();
-      }
-      res.send({
-        count,
-        question,
-      });
     });
   } finally {
   }
