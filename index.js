@@ -101,6 +101,14 @@ async function run() {
       const users = (await reviewCollection.find(query).toArray()).reverse();
       res.send(users);
     });
+    // fetch by id
+    app.get('/question/:id', async (req, res) => {
+      const id = req.params.id;
+      const objectId = new ObjectId(id);
+      const query = { _id: objectId}
+      const result = await questionCollection.findOne(query);
+      res.send(result);
+  });
     //set role admin
     app.put("/users/admin/:id", async (req, res) => {
       const id = req.params.id;
